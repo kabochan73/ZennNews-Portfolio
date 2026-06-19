@@ -21,4 +21,10 @@ class Article extends Model
         'published_at' => 'datetime',
         'liked_count' => 'integer',
     ];
+
+    // Zenn の記事 URL を生成
+    public function getUrlAttribute(): string
+    {
+        return "https://zenn.dev/{$this->author_username}/articles/{$this->slug}";
+    }
 }
