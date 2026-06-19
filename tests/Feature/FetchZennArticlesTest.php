@@ -36,6 +36,7 @@ class FetchZennArticlesTest extends TestCase
             '*topicname=nextjs*' => Http::response(['articles' => [
                 $this->makeArticleData(3, 'nextjs'),
             ], 'next_page' => null]),
+            '*topicname=aws*' => Http::response(['articles' => [], 'next_page' => null]),
         ]);
 
         $this->artisan('zenn:fetch')->assertSuccessful();
@@ -54,6 +55,7 @@ class FetchZennArticlesTest extends TestCase
                 array_merge($this->makeArticleData(1, 'laravel'), ['liked_count' => 999]),
             ], 'next_page' => null]),
             '*topicname=nextjs*' => Http::response(['articles' => [], 'next_page' => null]),
+            '*topicname=aws*'    => Http::response(['articles' => [], 'next_page' => null]),
         ]);
 
         $this->artisan('zenn:fetch')->assertSuccessful();
@@ -69,6 +71,7 @@ class FetchZennArticlesTest extends TestCase
             '*topicname=nextjs*'  => Http::response(['articles' => [
                 $this->makeArticleData(3, 'nextjs'),
             ], 'next_page' => null]),
+            '*topicname=aws*'     => Http::response(['articles' => [], 'next_page' => null]),
         ]);
 
         $this->artisan('zenn:fetch')->assertSuccessful();
@@ -90,6 +93,7 @@ class FetchZennArticlesTest extends TestCase
                 $this->makeArticleData(9999, 'laravel'),
             ], 'next_page' => null]),
             '*topicname=nextjs*' => Http::response(['articles' => [], 'next_page' => null]),
+            '*topicname=aws*'    => Http::response(['articles' => [], 'next_page' => null]),
         ]);
 
         $this->artisan('zenn:fetch')->assertSuccessful();

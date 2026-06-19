@@ -17,7 +17,7 @@ class FetchZennArticles extends Command
     private const BASE_URL = 'https://zenn.dev/api/articles';
 
     // 取得対象のトピック
-    private const TOPICS = ['laravel', 'nextjs'];
+    private const TOPICS = ['laravel', 'nextjs', 'aws'];
 
     // 1回のフェッチでトピックごとに取得する件数
     private const FETCH_LIMIT = 25;
