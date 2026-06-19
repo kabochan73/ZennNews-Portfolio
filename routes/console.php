@@ -1,8 +1,6 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
+// 毎日9時（日本時間）にZenn記事を取得
+Schedule::command('zenn:fetch')->dailyAt('09:00')->timezone('Asia/Tokyo');
