@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: dev
     ports:
       - "8080:80"
     env_file:
@@ -8,6 +10,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
 
   db:
     image: postgres:17-alpine
