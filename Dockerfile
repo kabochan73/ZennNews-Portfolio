@@ -38,6 +38,15 @@ RUN chown -R www-data:www-data storage bootstrap/cache \
 
 ENTRYPOINT ["/entrypoint.sh"]
 
+# フロントエンドビルド
+FROM node:22-alpine AS node-builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --prefer-offline
+COPY . .
+RUN npm run build
+
 # 本番用
 FROM base AS prod
 
@@ -45,6 +54,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
 COPY . .
+COPY --from=node-builder /app/public/build ./public/build
 RUN composer dump-autoload --optimize
 
 RUN chown -R www-data:www-data storage bootstrap/cache \
