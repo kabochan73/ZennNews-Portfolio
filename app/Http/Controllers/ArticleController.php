@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\View\Components\TopicTheme;
 
 class ArticleController extends Controller
 {
     public function index()
     {
         $topic = request('topic', 'laravel');
+        $theme = new TopicTheme($topic);
 
         // 最新記事一覧
         $articles = Article::where('topic', $topic)
@@ -21,6 +23,6 @@ class ArticleController extends Controller
             ->take(10)
             ->get();
 
-        return view('articles.index', compact('articles', 'popular', 'topic'));
+        return view('articles.index', compact('articles', 'popular', 'topic', 'theme'));
     }
 }
