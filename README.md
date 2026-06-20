@@ -2,6 +2,8 @@
 
 Zenn の技術記事（Laravel / Next.js / AWS）を自動取得して一覧表示するニュースアグリゲーターです。
 
+**デプロイ先:** https://zennnews-portfolio-production.up.railway.app
+
 ## 概要
 
 毎日午前9時（JST）に Zenn API から最新記事を取得し、トピックごとに最大50件をデータベースへ保存します。ユーザーはトップページでトピックを切り替えながら最新記事と人気記事ランキングを確認できます。
