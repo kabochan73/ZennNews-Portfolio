@@ -1,58 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ZennNews
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Zenn の技術記事（Laravel / Next.js / AWS）を自動取得して一覧表示するニュースアグリゲーターです。
 
-## About Laravel
+## 概要
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+毎日午前9時（JST）に Zenn API から最新記事を取得し、トピックごとに最大50件をデータベースへ保存します。ユーザーはトップページでトピックを切り替えながら最新記事と人気記事ランキングを確認できます。
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 使用技術
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| カテゴリ | 技術 |
+|---|---|
+| バックエンド | PHP 8.4 / Laravel 13 |
+| フロントエンド | Blade / Tailwind CSS |
+| データベース | PostgreSQL 17 |
+| インフラ | Docker（nginx + PHP-FPM + supervisor） |
+| デプロイ | Railway |
+| テスト | PHPUnit 12 |
 
-## Learning Laravel
+## 機能
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **トピック切り替え** — Laravel / Next.js / AWS の3トピックをワンクリックで切り替え
+- **最新記事一覧** — 公開日時の新しい順に表示
+- **人気記事ランキング** — いいね数の多い順 TOP 10 をサイドバーに表示
+- **自動取得スケジューラー** — 毎日9時（JST）に Zenn API から記事を自動更新
+- **上限管理** — トピックごとに最大50件を保存し、古い記事を自動削除
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## アーキテクチャ
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+[Railway Cron Job]
+       ↓ php artisan schedule:run（毎分）
+[Laravel Scheduler]
+       ↓ 毎日 09:00 JST
+[zenn:fetch コマンド]
+       ↓ Zenn API（3トピック × 25件）
+[articles テーブル]（PostgreSQL）
+       ↓
+[ArticleController]
+       ↓
+[Blade View]（ユーザー）
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## ローカル開発環境の構築
 
-## Contributing
+### 前提条件
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Docker / Docker Compose
 
-## Code of Conduct
+### セットアップ
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+git clone https://github.com/kabochan73/ZennNews-Portfolio.git
+cd ZennNews-Portfolio
 
-## Security Vulnerabilities
+# 環境変数の設定
+cp .env.example .env  # ※ .env は .env.example を元に作成してください
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# コンテナ起動
+docker compose up -d
 
-## License
+# 依存パッケージのインストール
+docker compose exec app composer install
+docker compose exec app npm install && npm run build
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# マイグレーション
+docker compose exec app php artisan migrate
+
+# 記事の初期取得
+docker compose exec app php artisan zenn:fetch
+```
+
+ブラウザで `http://localhost:8080` にアクセスしてください。
+
+## テスト
+
+```bash
+docker compose exec app php artisan test
+```
+
+| テストスイート | 件数 | 内容 |
+|---|---|---|
+| Unit | 1 | Article モデルの URL 生成 |
+| Feature | 8 | コントローラーのレスポンス・API 取得コマンド |
+
+## ディレクトリ構成（主要ファイル）
+
+```
+app/
+├── Console/Commands/FetchZennArticles.php  # Zenn API 取得コマンド
+├── Http/Controllers/ArticleController.php  # 記事一覧コントローラー
+├── Models/Article.php                      # Article モデル
+└── View/Components/TopicTheme.php          # トピック別カラーテーマ
+database/
+└── migrations/..._create_articles_table.php
+resources/views/articles/index.blade.php    # メインビュー
+routes/
+├── web.php                                 # ルーティング
+└── console.php                             # スケジューラー定義
+```
