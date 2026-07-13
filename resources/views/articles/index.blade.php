@@ -11,7 +11,7 @@
 
 <body class="text-gray-900">
 
-    <nav class="sticky top-0 z-40 bg-white px-2 py-3">
+    <nav class="sticky max-w-2xl mx-auto top-0 z-40 bg-white px-2 py-3">
         <div class="grid grid-cols-5 gap-2">
             @foreach ($topics as $slug => $meta)
                 @php $isActive = $slug === $topic; @endphp
