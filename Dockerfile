@@ -20,6 +20,7 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY docker/entrypoint.sh /entrypoint.sh
+COPY docker/crontab /etc/crontabs/root
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 80
