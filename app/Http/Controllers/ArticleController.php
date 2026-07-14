@@ -26,9 +26,9 @@ class ArticleController extends Controller
                 ->latest('published_at')
                 ->get()
                 ->map(fn (Article $article) => [
-                    'title'        => $article->title,
-                    'url'          => $article->url,
-                    'author_name'  => $article->author_name,
+                    'title' => $article->title,
+                    'url' => $article->url,
+                    'author_name' => $article->author_name,
                     'published_at' => $article->published_at->format('Y/m/d'),
                 ])
                 ->all(),

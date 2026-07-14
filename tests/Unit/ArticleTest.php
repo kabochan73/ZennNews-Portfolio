@@ -11,7 +11,7 @@ class ArticleTest extends TestCase
     {
         $article = new Article([
             'author_username' => 'johndoe',
-            'slug'            => 'my-laravel-article',
+            'slug' => 'my-laravel-article',
         ]);
 
         $this->assertSame(

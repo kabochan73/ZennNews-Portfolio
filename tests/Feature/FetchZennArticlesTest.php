@@ -15,12 +15,12 @@ class FetchZennArticlesTest extends TestCase
     private function makeArticleData(int $id, string $topic): array
     {
         return [
-            'id'           => $id,
-            'title'        => "Article {$id}",
-            'slug'         => "article-{$id}",
+            'id' => $id,
+            'title' => "Article {$id}",
+            'slug' => "article-{$id}",
             'published_at' => now()->toISOString(),
-            'user'         => [
-                'name'     => 'Test User',
+            'user' => [
+                'name' => 'Test User',
                 'username' => 'testuser',
             ],
         ];
@@ -89,7 +89,7 @@ class FetchZennArticlesTest extends TestCase
     {
         Http::fake([
             '*topicname=laravel*' => Http::response(null, 500),
-            '*topicname=nextjs*'  => Http::response(['articles' => [
+            '*topicname=nextjs*' => Http::response(['articles' => [
                 $this->makeArticleData(3, 'nextjs'),
             ], 'next_page' => null]),
             '*' => Http::response(['articles' => [], 'next_page' => null]),
@@ -104,7 +104,7 @@ class FetchZennArticlesTest extends TestCase
     public function test_deletes_oldest_articles_when_exceeding_limit(): void
     {
         Article::factory()->count(51)->create([
-            'topic'        => 'laravel',
+            'topic' => 'laravel',
             'published_at' => now()->subYear(),
         ]);
 

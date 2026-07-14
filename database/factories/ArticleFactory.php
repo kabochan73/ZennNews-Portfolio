@@ -19,12 +19,12 @@ class ArticleFactory extends Factory
     {
         return [
             'zenn_article_id' => $this->faker->unique()->randomNumber(6),
-            'title'           => $this->faker->sentence(),
-            'slug'            => $this->faker->slug(),
-            'author_name'     => $this->faker->name(),
+            'title' => $this->faker->sentence(),
+            'slug' => $this->faker->slug(),
+            'author_name' => $this->faker->name(),
             'author_username' => $this->faker->userName(),
-            'published_at'    => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'topic'           => $this->faker->randomElement(array_keys(config('topics'))),
+            'published_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
+            'topic' => $this->faker->randomElement(array_keys(config('topics'))),
         ];
     }
 }

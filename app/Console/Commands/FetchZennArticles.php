@@ -27,7 +27,7 @@ class FetchZennArticles extends Command
     {
         $topics = $this->targetTopics();
 
-        $this->info('Fetching articles from Zenn... (' . implode(', ', $topics) . ')');
+        $this->info('Fetching articles from Zenn... ('.implode(', ', $topics).')');
 
         $created = 0;
         $updated = 0;
@@ -36,12 +36,13 @@ class FetchZennArticles extends Command
             // Zenn API からトピックの最新記事を取得
             $response = Http::get(self::BASE_URL, [
                 'topicname' => $topic,
-                'order'     => 'latest',
-                'count'     => self::FETCH_LIMIT,
+                'order' => 'latest',
+                'count' => self::FETCH_LIMIT,
             ]);
 
             if ($response->failed()) {
                 Log::error('Zenn API request failed', ['topic' => $topic]);
+
                 continue;
             }
 
@@ -52,12 +53,12 @@ class FetchZennArticles extends Command
                 $result = Article::updateOrCreate(
                     ['zenn_article_id' => $article['id']],
                     [
-                        'title'           => $article['title'],
-                        'slug'            => $article['slug'],
-                        'author_name'     => $article['user']['name'] ?? '',
+                        'title' => $article['title'],
+                        'slug' => $article['slug'],
+                        'author_name' => $article['user']['name'] ?? '',
                         'author_username' => $article['user']['username'] ?? '',
-                        'published_at'    => $article['published_at'],
-                        'topic'           => $topic,
+                        'published_at' => $article['published_at'],
+                        'topic' => $topic,
                     ],
                 );
 
@@ -81,7 +82,7 @@ class FetchZennArticles extends Command
         $topics = config('topics');
 
         if ($batch = $this->option('batch')) {
-            $topics = array_filter($topics, fn(array $topic) => $topic['batch'] === (int) $batch);
+            $topics = array_filter($topics, fn (array $topic) => $topic['batch'] === (int) $batch);
         }
 
         return array_keys($topics);

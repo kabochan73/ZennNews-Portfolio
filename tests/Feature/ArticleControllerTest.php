@@ -68,13 +68,13 @@ class ArticleControllerTest extends TestCase
     public function test_articles_are_ordered_by_latest_published_at(): void
     {
         Article::factory()->create([
-            'topic'        => 'laravel',
-            'title'        => 'Old article',
+            'topic' => 'laravel',
+            'title' => 'Old article',
             'published_at' => now()->subDays(5),
         ]);
         Article::factory()->create([
-            'topic'        => 'laravel',
-            'title'        => 'New article',
+            'topic' => 'laravel',
+            'title' => 'New article',
             'published_at' => now(),
         ]);
 
