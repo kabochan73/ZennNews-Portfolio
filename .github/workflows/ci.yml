@@ -19,6 +19,11 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, sqlite3, bcmath, zip, gd
           coverage: none
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
       - name: Cache composer dependencies
         uses: actions/cache@v4
         with:
@@ -26,8 +31,13 @@ jobs:
           key: composer-${{ hashFiles('composer.lock') }}
           restore-keys: composer-
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Install and build frontend assets
+        run: |
+          npm ci
+          npm run build
 
       - name: Prepare environment
         run: |
